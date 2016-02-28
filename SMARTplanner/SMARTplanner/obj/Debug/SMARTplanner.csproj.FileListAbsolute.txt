@@ -57,3 +57,7 @@ C:\Users\Алексей\Documents\Visual Studio 2013\Projects\SMARTplanner\SMART
 C:\Users\Алексей\Documents\Visual Studio 2013\Projects\SMARTplanner\SMARTplanner\SMARTplanner\bin\Ninject.xml
 C:\Users\Алексей\Documents\Visual Studio 2013\Projects\SMARTplanner\SMARTplanner\SMARTplanner\bin\SMARTplanner.Data.dll
 C:\Users\Алексей\Documents\Visual Studio 2013\Projects\SMARTplanner\SMARTplanner\SMARTplanner\bin\SMARTplanner.Data.pdb
+C:\Users\Алексей\Documents\Visual Studio 2013\Projects\SMARTplanner\SMARTplanner\SMARTplanner\bin\SMARTplanner.Entities.dll
+C:\Users\Алексей\Documents\Visual Studio 2013\Projects\SMARTplanner\SMARTplanner\SMARTplanner\bin\SMARTplanner.Logic.dll
+C:\Users\Алексей\Documents\Visual Studio 2013\Projects\SMARTplanner\SMARTplanner\SMARTplanner\bin\SMARTplanner.Entities.pdb
+C:\Users\Алексей\Documents\Visual Studio 2013\Projects\SMARTplanner\SMARTplanner\SMARTplanner\bin\SMARTplanner.Logic.pdb

@@ -171,6 +171,7 @@
     <Compile Include="Global.asax.cs">
       <DependentUpon>Global.asax</DependentUpon>
     </Compile>
+    <Compile Include="Infrastructure\NinjectDependencyResolver.cs" />
     <Compile Include="Models\AccountViewModels.cs" />
     <Compile Include="Models\ManageViewModels.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -247,6 +248,14 @@
     <ProjectReference Include="..\SMARTplanner.Data\SMARTplanner.Data.csproj">
       <Project>{70ecfc03-f400-4f85-91ff-35af998acc44}</Project>
       <Name>SMARTplanner.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SMARTplanner.Entities\SMARTplanner.Entities.csproj">
+      <Project>{79bed0d5-2773-44e1-b23d-cc9bbff0c374}</Project>
+      <Name>SMARTplanner.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SMARTplanner.Logic\SMARTplanner.Logic.csproj">
+      <Project>{fe61dab3-9e98-484f-8329-8d5c3975a2f5}</Project>
+      <Name>SMARTplanner.Logic</Name>
     </ProjectReference>
   </ItemGroup>
   <PropertyGroup>
