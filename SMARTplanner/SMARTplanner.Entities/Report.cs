@@ -16,7 +16,7 @@ namespace SMARTplanner.Entities
             get { return _workTime; }
             set
             {
-                if ((value % WorkItem.UnitOfTime).Equals(1))     // fix this rule - INCORRECT NOW!!!
+                if ((value % WorkItem.UnitOfTime).Equals(0))
                 {
                     _workTime = value;
                 }

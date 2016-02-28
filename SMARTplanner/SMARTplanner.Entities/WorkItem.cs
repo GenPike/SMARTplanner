@@ -21,7 +21,7 @@ namespace SMARTplanner.Entities
             get { return _estimatedTime; }
             set
             {
-                if ((value % UnitOfTime).Equals(1))     // fix this rule - INCORRECT NOW!!!
+                if ((value % UnitOfTime).Equals(0))
                 {
                     _estimatedTime = value;
                 }
