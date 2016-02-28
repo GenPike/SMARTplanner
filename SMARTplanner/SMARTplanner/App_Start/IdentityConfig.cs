@@ -11,6 +11,7 @@ using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin;
 using Microsoft.Owin.Security;
 using SMARTplanner.Data.Exact;
+using SMARTplanner.Entities;
 
 namespace SMARTplanner
 {

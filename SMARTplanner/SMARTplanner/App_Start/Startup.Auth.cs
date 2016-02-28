@@ -6,6 +6,7 @@ using Microsoft.Owin.Security.Cookies;
 using Microsoft.Owin.Security.Google;
 using Owin;
 using SMARTplanner.Data.Exact;
+using SMARTplanner.Entities;
 
 namespace SMARTplanner
 {

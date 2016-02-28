@@ -8,7 +8,7 @@ using System.Web.Mvc;
 using Microsoft.AspNet.Identity;
 using Microsoft.AspNet.Identity.Owin;
 using Microsoft.Owin.Security;
-using SMARTplanner.Data.Exact;
+using SMARTplanner.Entities;
 using SMARTplanner.Models;
 
 namespace SMARTplanner.Controllers

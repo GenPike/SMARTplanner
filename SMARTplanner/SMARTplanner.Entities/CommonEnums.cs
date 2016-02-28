@@ -7,4 +7,11 @@ namespace SMARTplanner.Entities
         Analysis,
         Implementation
     }
+
+    public enum ProjectAccess
+    {
+        Read,
+        ReadReport,
+        ReadReportEdit
+    }
 }

@@ -58,7 +58,6 @@
     <Compile Include="Contracts\ISmartPlannerContext.cs" />
     <Compile Include="Contracts\IUnitOfWork.cs" />
     <Compile Include="Exact\ApplicationDbContext.cs" />
-    <Compile Include="Exact\ApplicationUser.cs" />
     <Compile Include="Exact\GenericRepository.cs" />
     <Compile Include="Exact\UnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
@@ -67,7 +66,12 @@
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup />
+  <ItemGroup>
+    <ProjectReference Include="..\SMARTplanner.Entities\SMARTplanner.Entities.csproj">
+      <Project>{79bed0d5-2773-44e1-b23d-cc9bbff0c374}</Project>
+      <Name>SMARTplanner.Entities</Name>
+    </ProjectReference>
+  </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
