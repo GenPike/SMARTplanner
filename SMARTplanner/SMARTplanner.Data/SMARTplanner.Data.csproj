@@ -55,17 +55,19 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Contracts\ISmartPlannerContext.cs" />
+    <Compile Include="Contracts\IUnitOfWork.cs" />
     <Compile Include="Exact\ApplicationDbContext.cs" />
     <Compile Include="Exact\ApplicationUser.cs" />
+    <Compile Include="Exact\GenericRepository.cs" />
+    <Compile Include="Exact\UnitOfWork.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
     <None Include="App.config" />
     <None Include="packages.config" />
   </ItemGroup>
-  <ItemGroup>
-    <Folder Include="Contracts\" />
-  </ItemGroup>
+  <ItemGroup />
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 
        Other similar extension points exist, see Microsoft.Common.targets.
