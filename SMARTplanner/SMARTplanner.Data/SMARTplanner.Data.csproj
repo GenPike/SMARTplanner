@@ -60,6 +60,11 @@
     <Compile Include="Exact\ApplicationDbContext.cs" />
     <Compile Include="Exact\GenericRepository.cs" />
     <Compile Include="Exact\UnitOfWork.cs" />
+    <Compile Include="Migrations\201603031042161_Initial.cs" />
+    <Compile Include="Migrations\201603031042161_Initial.Designer.cs">
+      <DependentUpon>201603031042161_Initial.cs</DependentUpon>
+    </Compile>
+    <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>
@@ -71,6 +76,11 @@
       <Project>{79bed0d5-2773-44e1-b23d-cc9bbff0c374}</Project>
       <Name>SMARTplanner.Entities</Name>
     </ProjectReference>
+  </ItemGroup>
+  <ItemGroup>
+    <EmbeddedResource Include="Migrations\201603031042161_Initial.resx">
+      <DependentUpon>201603031042161_Initial.cs</DependentUpon>
+    </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
   <!-- To modify your build process, add your task inside one of the targets below and uncomment it. 

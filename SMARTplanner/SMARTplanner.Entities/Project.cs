@@ -19,6 +19,6 @@ namespace SMARTplanner.Entities
         [ForeignKey("CreatorId")]
         public virtual ApplicationUser Creator { get; set; }
         public virtual ICollection<Issue> Issues { get; set; }
-        public virtual ICollection<ProjectUserAccess> ProjectMembers { get; set; }
+        public virtual ICollection<ProjectUserAccess> ProjectUsers { get; set; }
     }
 }

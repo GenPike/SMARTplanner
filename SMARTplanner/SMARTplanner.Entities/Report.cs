@@ -24,8 +24,6 @@ namespace SMARTplanner.Entities
         }
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime ReportDate { get; set; }
-        [NotMapped]
-        public DateTime LastModified { get; set; }
         public string WorkDescription { get; set; }
 
         //to identify batch of reports from one user in exact time
