@@ -12,6 +12,7 @@ namespace SMARTplanner.Entities.Helpers
     {
         Read,
         ReadReport,
-        ReadReportEdit
+        ReadReportEdit,
+        AdminAccess
     }
 }

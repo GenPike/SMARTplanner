@@ -2,8 +2,8 @@
 using System.Collections.Generic;
 using System.Web.Mvc;
 using Ninject;
-using SMARTplanner.Data.Contracts;
-using SMARTplanner.Data.Exact;
+using SMARTplanner.Logic.Contracts;
+using SMARTplanner.Logic.Exact;
 
 namespace SMARTplanner.Infrastructure
 {
@@ -29,7 +29,8 @@ namespace SMARTplanner.Infrastructure
 
         private void AddBindings()
         {
-            _kernel.Bind<ISmartPlannerContext>().To<ApplicationDbContext>();
+            _kernel.Bind<Data.Contracts.ISmartPlannerContext>().To<Data.Exact.ApplicationDbContext>();
+            _kernel.Bind<IProjectService>().To<ProjectService>();
         }
     }
 }
