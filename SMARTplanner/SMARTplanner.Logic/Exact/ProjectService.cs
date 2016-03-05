@@ -5,13 +5,13 @@ using SMARTplanner.Data.Contracts;
 using SMARTplanner.Entities.Domain;
 using SMARTplanner.Entities.Helpers;
 using SMARTplanner.Logic.Contracts;
+using SMARTplanner.Logic.Business;
 
 namespace SMARTplanner.Logic.Exact
 {
     public class ProjectService : IProjectService
     {
         private readonly ISmartPlannerContext _context;
-        private const int PageSizeMax = 50;
 
         public ProjectService(ISmartPlannerContext ctx)
         {
@@ -20,7 +20,7 @@ namespace SMARTplanner.Logic.Exact
 
         public IEnumerable<Project> GetProjectsPaged(string userId, bool? ownership = null, int page = 1, int pageSize = 10)
         {
-            if (pageSize > PageSizeMax) return null;
+            if (!Inspector.IsValidPageSize(pageSize)) return null;
             IEnumerable<Project> targetProjects;
 
             if (ownership.HasValue)
@@ -65,22 +65,44 @@ namespace SMARTplanner.Logic.Exact
 
         #endregion
 
-        public Project GetProject(long projectId)
+        public Project GetProject(long projectId, string userId)
         {
-            return _context.Projects
+            var project = _context.Projects
                 .SingleOrDefault(p => p.Id == projectId);
+
+            //check user access
+            if (project != null)
+            {
+                if (project.ProjectUsers
+                    .Count(pu => pu.UserId.Equals(userId)) != 0) return project;
+            }
+
+            return null;
         }
 
-        public Project GetProject(string projectName)
+        public Project GetProject(string projectName, string userId)
         {
-            return _context.Projects
+            var project = _context.Projects
                 .SingleOrDefault(p => p.Name == projectName);
+
+            //check user access
+            if (project != null)
+            {
+                if (project.ProjectUsers
+                    .Count(pu => pu.UserId.Equals(userId)) != 0) return project;
+            }
+
+            return null;
         }
 
         public void AddProject(Project project)
         {
             if (project != null)
             {
+                //check permission to create
+                int nCreatedProjects = GetProjectsUserCreated(project.CreatorId).Count();
+                if (!Inspector.CanUserCreateProject(nCreatedProjects)) return;
+
                 //create user-project reference
                 project.ProjectUsers.Add(
                     new ProjectUserAccess
@@ -96,7 +118,7 @@ namespace SMARTplanner.Logic.Exact
             }
         }
 
-        public void UpdateProject(Project project)
+        public void UpdateProject(Project project, string userId)
         {
             if (project != null)
             {
@@ -105,6 +127,11 @@ namespace SMARTplanner.Logic.Exact
 
                 if (projectToUpdate != null)
                 {
+                    //check permission for editiing project info
+                    var projUserRef = projectToUpdate.ProjectUsers
+                        .SingleOrDefault(pu => pu.UserId.Equals(userId));
+                    if (!Inspector.CanUserUpdateProject(projUserRef)) return;
+
                     _context.Entry(projectToUpdate).CurrentValues.SetValues(project);
                     _context.SaveChanges();
                 }
