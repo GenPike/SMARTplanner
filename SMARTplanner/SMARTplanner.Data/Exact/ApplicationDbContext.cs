@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.Data.Entity;
 using Microsoft.AspNet.Identity.EntityFramework;
 using SMARTplanner.Data.Contracts;
-using SMARTplanner.Entities;
+using SMARTplanner.Entities.Domain;
 
 namespace SMARTplanner.Data.Exact
 {

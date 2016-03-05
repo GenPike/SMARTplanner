@@ -1,6 +1,6 @@
 ﻿using System;
 
-namespace SMARTplanner.Entities
+namespace SMARTplanner.Entities.Helpers
 {
     public enum TaskType
     {

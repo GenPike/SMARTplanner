@@ -3,7 +3,7 @@ using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
 
-namespace SMARTplanner.Entities
+namespace SMARTplanner.Entities.Domain
 {
     public class Report
     {

@@ -30,7 +30,6 @@ namespace SMARTplanner.Infrastructure
         private void AddBindings()
         {
             _kernel.Bind<ISmartPlannerContext>().To<ApplicationDbContext>();
-            _kernel.Bind<IUnitOfWork>().To<UnitOfWork>();
         }
     }
 }

@@ -2,8 +2,9 @@
 using System.Collections.Generic;
 using System.ComponentModel.DataAnnotations;
 using System.ComponentModel.DataAnnotations.Schema;
+using SMARTplanner.Entities.Helpers;
 
-namespace SMARTplanner.Entities
+namespace SMARTplanner.Entities.Domain
 {
     public class WorkItem
     {
