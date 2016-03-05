@@ -11,6 +11,8 @@ namespace SMARTplanner.Entities.Domain
         public long Id { get; set; }
         [Required]
         public string Summary { get; set; }
+        //needed to sync number of issue in some other tracking system
+        public int? IssueTrackingNumber { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime DateCreated { get; set; }
 

@@ -61,6 +61,10 @@
     <Compile Include="Migrations\201603031042161_Initial.Designer.cs">
       <DependentUpon>201603031042161_Initial.cs</DependentUpon>
     </Compile>
+    <Compile Include="Migrations\201603051902240_IssueTrackingNumberColumn.cs" />
+    <Compile Include="Migrations\201603051902240_IssueTrackingNumberColumn.Designer.cs">
+      <DependentUpon>201603051902240_IssueTrackingNumberColumn.cs</DependentUpon>
+    </Compile>
     <Compile Include="Migrations\Configuration.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
@@ -77,6 +81,9 @@
   <ItemGroup>
     <EmbeddedResource Include="Migrations\201603031042161_Initial.resx">
       <DependentUpon>201603031042161_Initial.cs</DependentUpon>
+    </EmbeddedResource>
+    <EmbeddedResource Include="Migrations\201603051902240_IssueTrackingNumberColumn.resx">
+      <DependentUpon>201603051902240_IssueTrackingNumberColumn.cs</DependentUpon>
     </EmbeddedResource>
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
