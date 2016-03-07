@@ -9,19 +9,8 @@ namespace SMARTplanner.Entities.Domain
     {
         [Key]
         public long Id { get; set; }
-        
-        private double _workTime;
-        public double WorkTime
-        {
-            get { return _workTime; }
-            set
-            {
-                if ((value % WorkItem.UnitOfTime).Equals(0))
-                {
-                    _workTime = value;
-                }
-            }
-        }
+        [Required]
+        public double WorkTime { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime ReportDate { get; set; }
         public string WorkDescription { get; set; }

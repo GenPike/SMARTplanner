@@ -15,25 +15,12 @@ namespace SMARTplanner.Entities.Domain
         public TaskType TaskType { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime DateCreated { get; set; }
-
-        private double _estimatedTime;
-        public double EstimatedTime
-        {
-            get { return _estimatedTime; }
-            set
-            {
-                if ((value % UnitOfTime).Equals(0))
-                {
-                    _estimatedTime = value;
-                }
-            }
-        }
+        [Required]
+        public double EstimatedTime { get; set; }
 
         public long IssueId { get; set; }
         [ForeignKey("IssueId")]
         public virtual Issue Issue { get; set; }
         public virtual ICollection<Report> Reports { get; set; }
-
-        public const double UnitOfTime = 0.25; 
     }
 }

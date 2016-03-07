@@ -51,8 +51,10 @@
     <Compile Include="Business\Inspectors.cs" />
     <Compile Include="Contracts\IIssueService.cs" />
     <Compile Include="Contracts\IProjectService.cs" />
+    <Compile Include="Contracts\IWorkItemService.cs" />
     <Compile Include="Exact\IssueService.cs" />
     <Compile Include="Exact\ProjectService.cs" />
+    <Compile Include="Exact\WorkItemService.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
   </ItemGroup>
   <ItemGroup>

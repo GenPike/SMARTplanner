@@ -9,6 +9,7 @@ namespace SMARTplanner.Logic.Business
     {
         private const int ProjectsMaxUserCanCreate = 5;
         private const int PageSizeMax = 50;
+        public const double UnitOfTime = 0.25;
 
         public static bool IsValidPageSize(int pageSize)
         {
@@ -26,6 +27,12 @@ namespace SMARTplanner.Logic.Business
         {
             if (pu == null || pu.ProjectAccess != ProjectAccess.ReadReportEdit) return false;
             return true;
+        }
+
+        public static bool IsValidWorkItemTime(WorkItem item)
+        {
+            if ((item.EstimatedTime % UnitOfTime).Equals(0)) return true;
+            return false;
         }
     }
 }
