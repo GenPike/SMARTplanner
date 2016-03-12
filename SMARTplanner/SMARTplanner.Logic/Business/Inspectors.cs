@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using SMARTplanner.Entities.Domain;
 using SMARTplanner.Entities.Helpers;
 
@@ -8,7 +7,7 @@ namespace SMARTplanner.Logic.Business
     class Inspector
     {
         private const int ProjectsMaxUserCanCreate = 5;
-        private const int PageSizeMax = 50;
+        private const int PageSizeMax = 25;
         public const double UnitOfTime = 0.25;
 
         public static bool IsValidPageSize(int pageSize)

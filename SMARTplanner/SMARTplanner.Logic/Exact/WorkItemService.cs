@@ -10,10 +10,12 @@ namespace SMARTplanner.Logic.Exact
     public class WorkItemService : IWorkItemService
     {
         private readonly ISmartPlannerContext _context;
+        private readonly IAccessService _accessService;
 
-        public WorkItemService(ISmartPlannerContext ctx)
+        public WorkItemService(ISmartPlannerContext ctx, IAccessService access)
         {
             _context = ctx;
+            _accessService = access;
         }
 
         public IEnumerable<WorkItem> GetIssueWorkItems(long issueId, string userId)
@@ -24,7 +26,7 @@ namespace SMARTplanner.Logic.Exact
 
             if (issue != null)
             {
-                var projUserRef = GetUserAccess(issue, userId);
+                var projUserRef = _accessService.GetAccessByIssue(issue, userId);
                 if (!Inspector.CanUserUpdateProject(projUserRef)) return null;
                 
                 //get issue workitems
@@ -39,27 +41,22 @@ namespace SMARTplanner.Logic.Exact
             var workItem = GetWorkItemById(itemId);
             if (workItem != null)
             {
-                var projUserRef = GetUserAccess(workItem, userId);
+                var projUserRef = _accessService.GetAccessByWorkItem(workItem, userId);
                 if (!Inspector.CanUserUpdateProject(projUserRef)) return null;
             }
 
             return workItem;
         }
 
-        public void AddWorkItem(WorkItem item, string userId)
+        public void AddWorkItem(WorkItem item)
         {
-            if (item != null)
+            if (item != null && item.Issue != null)
             {
-                var issue = _context.Issues
-                    .SingleOrDefault(i => i.Id == item.IssueId);
-                if (issue != null)
-                {
-                    var projUserRef = GetUserAccess(issue, userId);
-                    if (!Inspector.CanUserUpdateProject(projUserRef)) return;
+                var projUserRef = _accessService.GetAccessByWorkItem(item, item.CreatorId);
+                if (!Inspector.CanUserUpdateProject(projUserRef)) return;
 
-                    _context.WorkItems.Add(item);
-                    _context.SaveChanges();
-                }
+                _context.WorkItems.Add(item);
+                _context.SaveChanges();
             }
         }
 
@@ -72,7 +69,7 @@ namespace SMARTplanner.Logic.Exact
                 if (itemToUpdate != null)
                 {
                     //check security
-                    var projUserRef = GetUserAccess(itemToUpdate, userId);
+                    var projUserRef = _accessService.GetAccessByWorkItem(itemToUpdate, userId);
                     if (!Inspector.CanUserUpdateProject(projUserRef)) return;
 
                     if (!Inspector.IsValidWorkItemTime(item)) return;
@@ -86,11 +83,10 @@ namespace SMARTplanner.Logic.Exact
         public void DeleteWorkItem(long itemId, string userId)
         {
             var item = GetWorkItemById(itemId);
-
             if (item != null)
             {
                 //check security
-                var projUserRef = GetUserAccess(item, userId);
+                var projUserRef = _accessService.GetAccessByWorkItem(item, userId);
                 if (!Inspector.CanUserUpdateProject(projUserRef)) return;
 
                 _context.WorkItems.Remove(item);
@@ -104,18 +100,6 @@ namespace SMARTplanner.Logic.Exact
         {
             return _context.WorkItems
                 .SingleOrDefault(w => w.Id == itemId);
-        }
-
-        private ProjectUserAccess GetUserAccess(WorkItem item, string userId)
-        {
-            return item.Issue.Project.ProjectUsers
-                    .SingleOrDefault(pu => pu.UserId.Equals(userId));
-        }
-
-        private ProjectUserAccess GetUserAccess(Issue issue, string userId)
-        {
-            return issue.Project.ProjectUsers
-                    .SingleOrDefault(pu => pu.UserId.Equals(userId));
         }
 
         #endregion

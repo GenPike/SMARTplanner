@@ -8,7 +8,7 @@ namespace SMARTplanner.Logic.Contracts
     {
         IEnumerable<WorkItem> GetIssueWorkItems(long issueId, string userId);
         WorkItem GetWorkItem(long itemId, string userId);
-        void AddWorkItem(WorkItem item, string userId);
+        void AddWorkItem(WorkItem item);
         void UpdateWorkItem(WorkItem item, string userId);
         void DeleteWorkItem(long itemId, string userId);
     }

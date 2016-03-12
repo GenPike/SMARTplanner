@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 using System.Linq;
 using SMARTplanner.Data.Contracts;
 using SMARTplanner.Entities.Domain;
@@ -11,10 +10,12 @@ namespace SMARTplanner.Logic.Exact
     public class IssueService : IIssueService
     {
         private readonly ISmartPlannerContext _context;
+        private readonly IAccessService _accessService;
 
-        public IssueService(ISmartPlannerContext ctx)
+        public IssueService(ISmartPlannerContext ctx, IAccessService access)
         {
             _context = ctx;
+            _accessService = access;
         }
 
         public IEnumerable<Issue> GetIssuesPaged(string userId, string summaryPart = null, int page = 1, int pageSize = 10)
@@ -22,7 +23,7 @@ namespace SMARTplanner.Logic.Exact
             if (!Inspector.IsValidPageSize(pageSize)) return null;
 
             //get accessible issues
-            var accessibleIssues = GetAccessibleIssues(userId);
+            var accessibleIssues = _accessService.GetAccessibleIssues(userId);
 
             //filter issues
             if (summaryPart != null)
@@ -36,38 +37,24 @@ namespace SMARTplanner.Logic.Exact
                 .Take(pageSize);
         }
 
-        #region AccessHelpers
-
-        private IEnumerable<Issue> GetAccessibleIssues(string userId)
-        {
-            return _context.ProjectUserAccesses
-                .Where(pu => pu.UserId.Equals(userId))
-                .SelectMany(pu => pu.Project.Issues);
-        } 
-
-        #endregion
-
         public Issue GetIssue(long issueId, string userId)
         {
-            return GetAccessibleIssues(userId)
+            return _accessService.GetAccessibleIssues(userId)
                 .SingleOrDefault(i => i.Id == issueId);
         }
 
         public Issue GetIssue(int trackingNumber, string userId)
         {
-            return GetAccessibleIssues(userId)
+            return _accessService.GetAccessibleIssues(userId)
                 .FirstOrDefault(i => i.IssueTrackingNumber == trackingNumber);
         }
 
         public void AddIssue(Issue issue)
         {
-            if (issue != null)
+            if (issue != null && issue.Project != null)
             {
                 //check user access to the project
-                var projUserRef = _context.ProjectUserAccesses
-                    .SingleOrDefault(pu => pu.ProjectId == issue.ProjectId &&
-                        pu.UserId.Equals(issue.CreatorId));
-
+                var projUserRef = _accessService.GetAccessByIssue(issue, issue.CreatorId);
                 if (!Inspector.CanUserUpdateProject(projUserRef)) return;
 
                 _context.Issues.Add(issue);
@@ -85,10 +72,7 @@ namespace SMARTplanner.Logic.Exact
                 if (issueToUpdate != null)
                 {
                     //check user access to the project
-                    var projUserRef = _context.ProjectUserAccesses
-                        .SingleOrDefault(pu => pu.ProjectId == issueToUpdate.ProjectId &&
-                                               pu.UserId.Equals(userId));
-
+                    var projUserRef = _accessService.GetAccessByIssue(issueToUpdate, userId);
                     if (!Inspector.CanUserUpdateProject(projUserRef)) return;
 
                     _context.Entry(issueToUpdate).CurrentValues.SetValues(issue);

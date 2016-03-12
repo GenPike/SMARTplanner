@@ -21,6 +21,9 @@ namespace SMARTplanner.Entities.Domain
         public long IssueId { get; set; }
         [ForeignKey("IssueId")]
         public virtual Issue Issue { get; set; }
+        public string CreatorId { get; set; }
+        [ForeignKey("CreatorId")]
+        public virtual ApplicationUser Creator { get; set; }
         public virtual ICollection<Report> Reports { get; set; }
     }
 }

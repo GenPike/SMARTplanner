@@ -30,32 +30,32 @@ namespace SMARTplanner.Logic.Exact
                 .SelectMany(pu => pu.Project.Issues);
         }
 
-        public ProjectUserAccess GetProjectAccessByProject(long projectId, string userId)
+        public ProjectUserAccess GetAccessByProject(long projectId, string userId)
         {
             return _context.ProjectUserAccesses
                 .SingleOrDefault(pu => pu.UserId.Equals(userId) &&
                              pu.ProjectId == projectId);
         }
 
-        public ProjectUserAccess GetProjectAccessByIssue(long projectId, string userId)
+        public ProjectUserAccess GetAccessByIssue(Issue issue, string userId)
+        {
+            return _context.ProjectUserAccesses
+                .SingleOrDefault(pu => pu.ProjectId == issue.Project.Id &&
+                    pu.UserId.Equals(userId));
+        }
+
+        public ProjectUserAccess GetAccessByWorkItem(WorkItem item, string userId)
+        {
+            return _context.ProjectUserAccesses
+                .SingleOrDefault(pu => pu.ProjectId == item.Issue.ProjectId &&
+                    pu.UserId.Equals(userId));
+        }
+
+        public ProjectUserAccess GetAccessByReport(long reportId, string userId)
         {
             throw new NotImplementedException();
         }
 
-        public ProjectUserAccess GetProjectAccessByIssue(Issue issue)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ProjectUserAccess GetProjectAccessByWorkItem(long projectId, string userId)
-        {
-            throw new NotImplementedException();
-        }
-
-        public ProjectUserAccess GetProjectAccessByReport(long projectId, string userId)
-        {
-            throw new NotImplementedException();
-        }
         public void GrantAccess(ProjectUserAccess grantedAccess, string grantorId)
         {
             throw new NotImplementedException();

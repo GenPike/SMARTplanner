@@ -12,6 +12,7 @@ namespace SMARTplanner.Entities.Domain
         [Required]
         public string Name { get; set; }
         public string CodeName { get; set; }
+        public string Description { get; set; }
         [DatabaseGenerated(DatabaseGeneratedOption.Computed)]
         public DateTime DateCreated { get; set; }
 

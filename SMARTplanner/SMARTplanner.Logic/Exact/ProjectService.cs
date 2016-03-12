@@ -12,10 +12,12 @@ namespace SMARTplanner.Logic.Exact
     public class ProjectService : IProjectService
     {
         private readonly ISmartPlannerContext _context;
+        private readonly IAccessService _accessService;
 
-        public ProjectService(ISmartPlannerContext ctx)
+        public ProjectService(ISmartPlannerContext ctx, IAccessService access)
         {
             _context = ctx;
+            _accessService = access;
         }
 
         public IEnumerable<Project> GetProjectsPaged(string userId, bool? ownership = null, int page = 1, int pageSize = 10)
@@ -29,7 +31,7 @@ namespace SMARTplanner.Logic.Exact
                     ? GetProjectsUserCreated(userId)
                     : GetProjectsUserInvolvedOnly(userId);
             }
-            else targetProjects = GetProjectsUserAccessible(userId);
+            else targetProjects = _accessService.GetAccessibleProjects(userId);
 
             return targetProjects
                 .Skip((page - 1) * pageSize)
@@ -38,21 +40,11 @@ namespace SMARTplanner.Logic.Exact
 
         #region GetProjectsFilters
 
-        private IEnumerable<Project> GetProjectsUserAccessible(string userId)
-        {
-            return _context.ProjectUserAccesses
-                .Where(pu => pu.UserId.Equals(userId))
-                .Select(pu => pu.Project);
-        }
-
         private IEnumerable<Project> GetProjectsUserInvolvedOnly(string userId)
         {
-            var userAccessibleProjects = _context.ProjectUserAccesses
-                .Where(pu => pu.UserId.Equals(userId))
-                .Select(pu => pu.Project);
+            var userAccessibleProjects = _accessService.GetAccessibleProjects(userId);
 
-            var userCreatedProjects = _context.Projects
-                .Where(p => p.CreatorId.Equals(userId));
+            var userCreatedProjects = GetProjectsUserCreated(userId);
 
             return userAccessibleProjects.Except(userCreatedProjects);
         }
@@ -73,8 +65,7 @@ namespace SMARTplanner.Logic.Exact
             //check user access
             if (project != null)
             {
-                if (project.ProjectUsers
-                    .Count(pu => pu.UserId.Equals(userId)) != 0) return project;
+                if (_accessService.GetAccessByProject(project.Id, userId) != null) return project;
             }
 
             return null;
@@ -88,8 +79,7 @@ namespace SMARTplanner.Logic.Exact
             //check user access
             if (project != null)
             {
-                if (project.ProjectUsers
-                    .Count(pu => pu.UserId.Equals(userId)) != 0) return project;
+                if (_accessService.GetAccessByProject(project.Id, userId) != null) return project;
             }
 
             return null;
@@ -128,8 +118,7 @@ namespace SMARTplanner.Logic.Exact
                 if (projectToUpdate != null)
                 {
                     //check permission for editiing project info
-                    var projUserRef = projectToUpdate.ProjectUsers
-                        .SingleOrDefault(pu => pu.UserId.Equals(userId));
+                    var projUserRef = _accessService.GetAccessByProject(projectToUpdate.Id, userId);
                     if (!Inspector.CanUserUpdateProject(projUserRef)) return;
 
                     _context.Entry(projectToUpdate).CurrentValues.SetValues(project);
