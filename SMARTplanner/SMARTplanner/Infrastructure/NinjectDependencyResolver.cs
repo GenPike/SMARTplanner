@@ -33,6 +33,9 @@ namespace SMARTplanner.Infrastructure
             _kernel.Bind<Data.Exact.ApplicationDbContext>().ToSelf().InSingletonScope();
             _kernel.Bind<IProjectService>().To<ProjectService>();
             _kernel.Bind<IIssueService>().To<IssueService>();
+            _kernel.Bind<IWorkItemService>().To<WorkItemService>();
+            _kernel.Bind<IReportService>().To<ReportService>();
+            _kernel.Bind<IAccessService>().To<AccessService>();
         }
     }
 }
