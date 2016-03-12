@@ -51,9 +51,11 @@ namespace SMARTplanner.Logic.Exact
                     pu.UserId.Equals(userId));
         }
 
-        public ProjectUserAccess GetAccessByReport(long reportId, string userId)
+        public ProjectUserAccess GetAccessByReport(Report report, string userId)
         {
-            throw new NotImplementedException();
+            return _context.ProjectUserAccesses
+                .SingleOrDefault(pu => pu.ProjectId == report.Issue.ProjectId &&
+                    pu.UserId.Equals(userId));
         }
 
         public void GrantAccess(ProjectUserAccess grantedAccess, string grantorId)

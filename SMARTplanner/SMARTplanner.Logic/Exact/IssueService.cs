@@ -55,7 +55,7 @@ namespace SMARTplanner.Logic.Exact
             {
                 //check user access to the project
                 var projUserRef = _accessService.GetAccessByIssue(issue, issue.CreatorId);
-                if (!Inspector.CanUserUpdateProject(projUserRef)) return;
+                if (projUserRef == null || !Inspector.CanUserUpdateProject(projUserRef)) return;
 
                 _context.Issues.Add(issue);
                 _context.SaveChanges();
@@ -73,7 +73,7 @@ namespace SMARTplanner.Logic.Exact
                 {
                     //check user access to the project
                     var projUserRef = _accessService.GetAccessByIssue(issueToUpdate, userId);
-                    if (!Inspector.CanUserUpdateProject(projUserRef)) return;
+                    if (projUserRef == null || !Inspector.CanUserUpdateProject(projUserRef)) return;
 
                     _context.Entry(issueToUpdate).CurrentValues.SetValues(issue);
                     _context.SaveChanges();

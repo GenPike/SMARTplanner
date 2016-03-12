@@ -98,8 +98,8 @@ namespace SMARTplanner.Logic.Exact
                     new ProjectUserAccess
                     {
                         UserId = project.CreatorId,
-                        ProjectAccess = ProjectAccess.ReadReportEdit,
-                        CanGrantAccess = false
+                        ProjectAccess = ProjectAccess.ProjectCreator,
+                        CanGrantAccess = true
                     }
                 );
                 //add project
@@ -119,7 +119,7 @@ namespace SMARTplanner.Logic.Exact
                 {
                     //check permission for editiing project info
                     var projUserRef = _accessService.GetAccessByProject(projectToUpdate.Id, userId);
-                    if (!Inspector.CanUserUpdateProject(projUserRef)) return;
+                    if (projUserRef == null || !Inspector.CanUserUpdateProject(projUserRef)) return;
 
                     _context.Entry(projectToUpdate).CurrentValues.SetValues(project);
                     _context.SaveChanges();

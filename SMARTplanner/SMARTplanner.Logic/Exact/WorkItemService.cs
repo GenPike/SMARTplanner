@@ -26,8 +26,9 @@ namespace SMARTplanner.Logic.Exact
 
             if (issue != null)
             {
+                //does user have any binding with project
                 var projUserRef = _accessService.GetAccessByIssue(issue, userId);
-                if (!Inspector.CanUserUpdateProject(projUserRef)) return null;
+                if (projUserRef == null) return null;
                 
                 //get issue workitems
                 return issue.WorkItems;
@@ -41,8 +42,9 @@ namespace SMARTplanner.Logic.Exact
             var workItem = GetWorkItemById(itemId);
             if (workItem != null)
             {
+                //does user have any binding with project
                 var projUserRef = _accessService.GetAccessByWorkItem(workItem, userId);
-                if (!Inspector.CanUserUpdateProject(projUserRef)) return null;
+                if (projUserRef == null) return null;
             }
 
             return workItem;
@@ -53,7 +55,7 @@ namespace SMARTplanner.Logic.Exact
             if (item != null && item.Issue != null)
             {
                 var projUserRef = _accessService.GetAccessByWorkItem(item, item.CreatorId);
-                if (!Inspector.CanUserUpdateProject(projUserRef)) return;
+                if (projUserRef == null || !Inspector.CanUserUpdateProject(projUserRef)) return;
 
                 _context.WorkItems.Add(item);
                 _context.SaveChanges();
@@ -70,7 +72,7 @@ namespace SMARTplanner.Logic.Exact
                 {
                     //check security
                     var projUserRef = _accessService.GetAccessByWorkItem(itemToUpdate, userId);
-                    if (!Inspector.CanUserUpdateProject(projUserRef)) return;
+                    if (projUserRef == null || !Inspector.CanUserUpdateProject(projUserRef)) return;
 
                     if (!Inspector.IsValidWorkItemTime(item)) return;
 
@@ -87,7 +89,7 @@ namespace SMARTplanner.Logic.Exact
             {
                 //check security
                 var projUserRef = _accessService.GetAccessByWorkItem(item, userId);
-                if (!Inspector.CanUserUpdateProject(projUserRef)) return;
+                if (projUserRef == null || !Inspector.CanUserUpdateProject(projUserRef)) return;
 
                 _context.WorkItems.Remove(item);
                 _context.SaveChanges();

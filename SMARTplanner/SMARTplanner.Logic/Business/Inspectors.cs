@@ -16,6 +16,12 @@ namespace SMARTplanner.Logic.Business
             return true;
         }
 
+        public static bool IsValidWorkItemTime(WorkItem item)
+        {
+            if ((item.EstimatedTime % UnitOfTime).Equals(0)) return true;
+            return false;
+        }
+
         public static bool CanUserCreateProject(int nCreatedProjects)
         {
             if (nCreatedProjects >= ProjectsMaxUserCanCreate) return false;
@@ -24,13 +30,31 @@ namespace SMARTplanner.Logic.Business
 
         public static bool CanUserUpdateProject(ProjectUserAccess pu)
         {
-            if (pu == null || pu.ProjectAccess != ProjectAccess.ReadReportEdit) return false;
+            if (pu.ProjectAccess == ProjectAccess.ReadReportEdit ||
+                pu.ProjectAccess == ProjectAccess.ProjectCreator) return false;
             return true;
         }
 
-        public static bool IsValidWorkItemTime(WorkItem item)
+        public static bool CanUserAddReport(ProjectUserAccess pu)
         {
-            if ((item.EstimatedTime % UnitOfTime).Equals(0)) return true;
+            if (pu.ProjectAccess == ProjectAccess.ReadReport ||
+                pu.ProjectAccess == ProjectAccess.ReadReportEdit ||
+                pu.ProjectAccess == ProjectAccess.ProjectCreator) return true;
+            return false;
+        }
+
+        public static bool CanUserUpdateReport(ProjectUserAccess pu, Report report, string userId)
+        {
+            if (pu.ProjectAccess == ProjectAccess.ReadReportEdit ||
+                (pu.ProjectAccess == ProjectAccess.ReadReport && report.ReporterId.Equals(userId)) ||
+                pu.ProjectAccess == ProjectAccess.ProjectCreator) return true;
+            return false;
+        }
+
+        public static bool CanUserDeleteReport(ProjectUserAccess pu, Report report, string userId)
+        {
+            if (report.ReporterId.Equals(userId) || 
+                pu.ProjectAccess == ProjectAccess.ProjectCreator) return true;
             return false;
         }
     }
