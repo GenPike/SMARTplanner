@@ -33,6 +33,14 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <ItemGroup>
+    <Reference Include="EntityFramework, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
+    <Reference Include="EntityFramework.SqlServer, Version=6.0.0.0, Culture=neutral, PublicKeyToken=b77a5c561934e089, processorArchitecture=MSIL">
+      <HintPath>..\packages\EntityFramework.6.1.3\lib\net45\EntityFramework.SqlServer.dll</HintPath>
+      <Private>True</Private>
+    </Reference>
     <Reference Include="Microsoft.CSharp" />
     <Reference Include="Microsoft.VisualStudio.QualityTools.UnitTestFramework, Version=10.0.0.0, Culture=neutral, PublicKeyToken=b03f5f7f11d50a3a, processorArchitecture=MSIL" />
     <Reference Include="System" />
@@ -83,14 +91,31 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="TestEntities\ExactTestDbSets.cs" />
+    <Compile Include="TestEntities\TestDbSet.cs" />
+    <Compile Include="TestEntities\TestSmartPlannerContext.cs" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="App.config" />
+    <Content Include="App.config">
+      <SubType>Designer</SubType>
+    </Content>
   </ItemGroup>
   <ItemGroup>
     <None Include="packages.config" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\SMARTplanner.Data\SMARTplanner.Data.csproj">
+      <Project>{70ecfc03-f400-4f85-91ff-35af998acc44}</Project>
+      <Name>SMARTplanner.Data</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SMARTplanner.Entities\SMARTplanner.Entities.csproj">
+      <Project>{79bed0d5-2773-44e1-b23d-cc9bbff0c374}</Project>
+      <Name>SMARTplanner.Entities</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SMARTplanner.Logic\SMARTplanner.Logic.csproj">
+      <Project>{fe61dab3-9e98-484f-8329-8d5c3975a2f5}</Project>
+      <Name>SMARTplanner.Logic</Name>
+    </ProjectReference>
     <ProjectReference Include="..\SMARTplanner\SMARTplanner.csproj">
       <Project>{86C17F80-EC86-48A8-8055-F51E9B93EA7A}</Project>
       <Name>SMARTplanner</Name>
