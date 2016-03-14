@@ -57,10 +57,13 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Domain\ApplicationUser.cs" />
+    <Compile Include="Domain\IssueLog.cs" />
+    <Compile Include="Domain\ProjectLog.cs" />
     <Compile Include="Helpers\CommonEnums.cs" />
     <Compile Include="Domain\Issue.cs" />
     <Compile Include="Domain\Project.cs" />
     <Compile Include="Domain\ProjectUserAccess.cs" />
+    <Compile Include="Helpers\LogEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Domain\Report.cs" />
     <Compile Include="Domain\WorkItem.cs" />
