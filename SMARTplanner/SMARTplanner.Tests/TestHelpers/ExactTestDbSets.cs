@@ -1,7 +1,7 @@
 ﻿using System.Linq;
 using SMARTplanner.Entities.Domain;
 
-namespace SMARTplanner.Tests.TestEntities
+namespace SMARTplanner.Tests.TestHelpers
 {
     class TestProjectDbSet : TestDbSet<Project>
     {

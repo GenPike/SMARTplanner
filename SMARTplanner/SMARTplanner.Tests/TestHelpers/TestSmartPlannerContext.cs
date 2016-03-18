@@ -4,7 +4,7 @@ using System.Data.Entity.Infrastructure;
 using SMARTplanner.Data.Contracts;
 using SMARTplanner.Entities.Domain;
 
-namespace SMARTplanner.Tests.TestEntities
+namespace SMARTplanner.Tests.TestHelpers
 {
     class TestSmartPlannerContext : ISmartPlannerContext
     {

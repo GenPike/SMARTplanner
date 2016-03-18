@@ -4,7 +4,7 @@ using System.Collections.ObjectModel;
 using System.Data.Entity;
 using System.Linq;
 
-namespace SMARTplanner.Tests.TestEntities
+namespace SMARTplanner.Tests.TestHelpers
 {
     public class TestDbSet<T> : DbSet<T>, IQueryable, IEnumerable<T>
         where T : class

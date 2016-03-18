@@ -91,9 +91,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Properties\AssemblyInfo.cs" />
-    <Compile Include="TestEntities\ExactTestDbSets.cs" />
-    <Compile Include="TestEntities\TestDbSet.cs" />
-    <Compile Include="TestEntities\TestSmartPlannerContext.cs" />
+    <Compile Include="TestHelpers\ExactTestDbSets.cs" />
+    <Compile Include="TestHelpers\TestDbSet.cs" />
+    <Compile Include="TestHelpers\TestSmartPlannerContext.cs" />
   </ItemGroup>
   <ItemGroup>
     <Content Include="App.config">
