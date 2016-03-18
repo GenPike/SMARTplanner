@@ -1,0 +1,14 @@
+﻿################################################################################
+# This .gitignore file was automatically created by Microsoft(R) Visual Studio.
+################################################################################
+
+/SMARTplanner/SMARTplanner.Tests/bin/Debug
+/SMARTplanner/SMARTplanner.Tests/obj/Debug
+/SMARTplanner/SMARTplanner.Logic/bin/Debug
+/SMARTplanner/SMARTplanner.Logic/obj/Debug
+/SMARTplanner/SMARTplanner.Entities/obj/Debug
+/SMARTplanner/SMARTplanner.Entities/bin/Debug
+/SMARTplanner/SMARTplanner.Data/obj/Debug
+/SMARTplanner/SMARTplanner.Data/bin/Debug
+/SMARTplanner/SMARTplanner/bin
+/SMARTplanner/packages
