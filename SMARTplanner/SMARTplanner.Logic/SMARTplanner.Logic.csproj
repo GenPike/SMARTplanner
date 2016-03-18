@@ -51,11 +51,14 @@
     <Compile Include="Business\Inspectors.cs" />
     <Compile Include="Contracts\IAccessService.cs" />
     <Compile Include="Contracts\IIssueService.cs" />
+    <Compile Include="Contracts\ILogService.cs" />
     <Compile Include="Contracts\IProjectService.cs" />
     <Compile Include="Contracts\IReportService.cs" />
     <Compile Include="Contracts\IWorkItemService.cs" />
     <Compile Include="Exact\AccessService.cs" />
+    <Compile Include="Exact\IssueLogService.cs" />
     <Compile Include="Exact\IssueService.cs" />
+    <Compile Include="Exact\ProjectLogService.cs" />
     <Compile Include="Exact\ProjectService.cs" />
     <Compile Include="Exact\ReportService.cs" />
     <Compile Include="Exact\WorkItemService.cs" />
