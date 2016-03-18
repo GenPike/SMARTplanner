@@ -2,13 +2,13 @@
 
 namespace SMARTplanner.Entities.Helpers
 {
-    public enum TaskType : uint
+    public enum TaskType
     {
         Analysis,
         Implementation
     }
 
-    public enum ProjectAccess : uint
+    public enum ProjectAccess
     {
         Read,
         ReadReport,
@@ -16,7 +16,7 @@ namespace SMARTplanner.Entities.Helpers
         ProjectCreator
     }
 
-    public enum ProjectActionType : uint
+    public enum ProjectActionType
     {
         IssueCreated,
         IssueDeleted,
@@ -24,7 +24,7 @@ namespace SMARTplanner.Entities.Helpers
         MemberAccessChanged
     }
 
-    public enum IssueActionType : uint
+    public enum IssueActionType
     {
         IssueIdeaChanged,
         IssueTrackNumberChanged,

@@ -27,6 +27,10 @@ namespace SMARTplanner.Tests.TestEntities
 
         public DbSet<Report> Reports { get; set; }
 
+        public DbSet<ProjectLog> ProjectsHistory { get; set; }
+
+        public DbSet<IssueLog> IssuesHistory { get; set; }
+
         public DbEntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class
         {
             throw new NotImplementedException();

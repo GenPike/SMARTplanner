@@ -12,6 +12,8 @@ namespace SMARTplanner.Data.Contracts
         DbSet<Issue> Issues { get; set; }
         DbSet<WorkItem> WorkItems { get; set; }
         DbSet<Report> Reports { get; set; }
+        DbSet<ProjectLog> ProjectsHistory { get; set; }
+        DbSet<IssueLog> IssuesHistory { get; set; }
 
         DbEntityEntry<TEntity> Entry<TEntity>(TEntity entity) where TEntity : class;
         DbSet<TEntity> Set<TEntity>() where TEntity : class;

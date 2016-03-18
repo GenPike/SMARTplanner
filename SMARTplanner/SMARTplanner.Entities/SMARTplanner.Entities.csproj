@@ -63,7 +63,7 @@
     <Compile Include="Domain\Issue.cs" />
     <Compile Include="Domain\Project.cs" />
     <Compile Include="Domain\ProjectUserAccess.cs" />
-    <Compile Include="Helpers\LogEntity.cs" />
+    <Compile Include="Helpers\ILogEntity.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="Domain\Report.cs" />
     <Compile Include="Domain\WorkItem.cs" />
