@@ -4,8 +4,14 @@ namespace SMARTplanner.Entities.Helpers
 {
     public abstract class ErrorResult
     {
-        public bool ErrorHandled { get; set; }
-        public string ErrorMessage { get; set; }
+        public bool ErrorHandled { get; private set; }
+        public string ErrorMessage { get; private set; }
+
+        public void HandleError(string message)
+        {
+            ErrorHandled = true;
+            ErrorMessage = message;
+        }
     }
 
     //Entities for returning any errors and results after service call

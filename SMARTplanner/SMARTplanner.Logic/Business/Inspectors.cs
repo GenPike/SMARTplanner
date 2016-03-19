@@ -6,9 +6,9 @@ namespace SMARTplanner.Logic.Business
 {
     class Inspector
     {
-        private const int ProjectsMaxUserCanCreate = 5;
-        private const int PageSizeMax = 25;
+        public const int ProjectsMaxUserCanCreate = 5;
         public const double UnitOfTime = 0.25;
+        private const int PageSizeMax = 25;
 
         public static bool IsValidPageSize(int pageSize)
         {

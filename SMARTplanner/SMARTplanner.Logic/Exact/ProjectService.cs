@@ -20,9 +20,14 @@ namespace SMARTplanner.Logic.Exact
             _accessService = access;
         }
 
-        public IEnumerable<Project> GetProjectsPaged(string userId, bool? ownership = null, int page = 1, int pageSize = 10)
+        public ServiceCollectionResult<Project> GetProjectsPaged(string userId, bool? ownership = null, int page = 1, int pageSize = 10)
         {
-            if (!Inspector.IsValidPageSize(pageSize)) return null;
+            var result = new ServiceCollectionResult<Project>();
+            if (!Inspector.IsValidPageSize(pageSize))
+            {
+                result.HandleError(ErrorMessagesDict.InvalidPageSize);
+                return result;
+            }
             IEnumerable<Project> targetProjects;
 
             if (ownership.HasValue)
@@ -33,9 +38,10 @@ namespace SMARTplanner.Logic.Exact
             }
             else targetProjects = _accessService.GetAccessibleProjects(userId);
 
-            return targetProjects
-                .Skip((page - 1) * pageSize)
-                .Take(pageSize);
+            result.TargetCollection = targetProjects
+                                    .Skip((page - 1) * pageSize)
+                                    .Take(pageSize);
+            return result;
         }
 
         #region GetProjectsFilters
@@ -57,41 +63,64 @@ namespace SMARTplanner.Logic.Exact
 
         #endregion
 
-        public Project GetProject(long projectId, string userId)
+        public ServiceSingleResult<Project> GetProject(long projectId, string userId)
         {
+            var result = new ServiceSingleResult<Project>();
             var project = _context.Projects
                 .SingleOrDefault(p => p.Id == projectId);
 
-            //check user access
-            if (project != null)
+            if (project == null)
             {
-                if (_accessService.GetAccessByProject(project.Id, userId) != null) return project;
+                result.HandleError(ErrorMessagesDict.NotFoundResource);
+                return result;
             }
 
-            return null;
+            //check user access
+            if (_accessService.GetAccessByProject(project.Id, userId) != null)
+            {
+                result.TargetObject = project;
+                return result;
+            }
+
+            result.HandleError(ErrorMessagesDict.AccessDenied);
+            return result;
         }
 
-        public Project GetProject(string projectName, string userId)
+        public ServiceSingleResult<Project> GetProject(string projectName, string userId)
         {
+            var result = new ServiceSingleResult<Project>();
             var project = _context.Projects
                 .SingleOrDefault(p => p.Name == projectName);
 
-            //check user access
-            if (project != null)
+            if (project == null)
             {
-                if (_accessService.GetAccessByProject(project.Id, userId) != null) return project;
+                result.HandleError(ErrorMessagesDict.NotFoundResource);
+                return result;
             }
 
-            return null;
+            //check user access
+            if (_accessService.GetAccessByProject(project.Id, userId) != null)
+            {
+                result.TargetObject = project;
+                return result;
+            }
+
+            result.HandleError(ErrorMessagesDict.AccessDenied);
+            return result;
         }
 
-        public void AddProject(Project project)
+        public ServiceSingleResult<bool> AddProject(Project project)
         {
+            var result = new ServiceSingleResult<bool>();
             if (project != null)
             {
                 //check permission to create
                 int nCreatedProjects = GetProjectsUserCreated(project.CreatorId).Count();
-                if (!Inspector.CanUserCreateProject(nCreatedProjects)) return;
+                if (!Inspector.CanUserCreateProject(nCreatedProjects))
+                {
+                    result.HandleError(ErrorMessagesDict.TooMuchProjectsCreated);
+                    return result;
+                }
 
                 //create user-project reference
                 project.ProjectUsers.Add(
@@ -102,14 +131,29 @@ namespace SMARTplanner.Logic.Exact
                         CanGrantAccess = true
                     }
                 );
+
                 //add project
                 _context.Projects.Add(project);
-                _context.SaveChanges();
+                try
+                {
+                    _context.SaveChanges();
+                    result.TargetObject = true;
+                    return result;
+                }
+                catch (Exception exc)
+                {
+                    result.HandleError(exc.Message);
+                    return result;
+                }
             }
+
+            result.HandleError(ErrorMessagesDict.NullInstance);
+            return result;
         }
 
-        public void UpdateProject(Project project, string userId)
+        public ServiceSingleResult<bool> UpdateProject(Project project, string userId)
         {
+            var result = new ServiceSingleResult<bool>();
             if (project != null)
             {
                 var projectToUpdate = _context.Projects
@@ -119,12 +163,32 @@ namespace SMARTplanner.Logic.Exact
                 {
                     //check permission for editiing project info
                     var projUserRef = _accessService.GetAccessByProject(projectToUpdate.Id, userId);
-                    if (projUserRef == null || !Inspector.CanUserUpdateProject(projUserRef)) return;
+                    if (projUserRef == null || !Inspector.CanUserUpdateProject(projUserRef))
+                    {
+                        result.HandleError(ErrorMessagesDict.AccessDenied);
+                        return result;
+                    }
 
                     _context.Entry(projectToUpdate).CurrentValues.SetValues(project);
-                    _context.SaveChanges();
+                    try
+                    {
+                        _context.SaveChanges();
+                        result.TargetObject = true;
+                        return result;
+                    }
+                    catch (Exception exc)
+                    {
+                        result.HandleError(exc.Message);
+                        return result;
+                    }
                 }
+                
+                result.HandleError(ErrorMessagesDict.NotFoundResource);
+                return result;
             }
+
+            result.HandleError(ErrorMessagesDict.NullInstance);
+            return result;
         }
     }
 }
