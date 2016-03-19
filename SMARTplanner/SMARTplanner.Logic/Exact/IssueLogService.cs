@@ -2,6 +2,7 @@
 using System.Linq;
 using SMARTplanner.Data.Contracts;
 using SMARTplanner.Entities.Domain;
+using SMARTplanner.Entities.Helpers;
 using SMARTplanner.Logic.Contracts;
 
 namespace SMARTplanner.Logic.Exact
@@ -17,8 +18,9 @@ namespace SMARTplanner.Logic.Exact
             _accessService = access;
         }
 
-        public IEnumerable<IssueLog> GetItemHistory(long issueId, string userId)
+        public ServiceCollectionResult<IssueLog> GetItemHistory(long issueId, string userId)
         {
+            var result = new ServiceCollectionResult<IssueLog>();
             var issue = _context.Issues.SingleOrDefault(i => i.Id == issueId);
 
             if (issue != null)
@@ -27,10 +29,18 @@ namespace SMARTplanner.Logic.Exact
                 var issueLogs = _context.IssuesHistory
                     .Where(ih => ih.IssueId == issueId);
 
-                if (_accessService.GetAccessByIssue(issue, userId) != null) return issueLogs;
+                if (_accessService.GetAccessByIssue(issue, userId) != null)
+                {
+                    result.TargetCollection = issueLogs;
+                    return result;
+                }
+
+                result.HandleError(ErrorMessagesDict.AccessDenied);
+                return result;
             }
 
-            return null;
+            result.HandleError(ErrorMessagesDict.NotFoundResource);
+            return result;
         }
 
         public void LogAction(IssueLog issueLog)

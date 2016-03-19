@@ -1,7 +1,9 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using System.Linq;
 using SMARTplanner.Data.Contracts;
 using SMARTplanner.Entities.Domain;
+using SMARTplanner.Entities.Helpers;
 using SMARTplanner.Logic.Business;
 using SMARTplanner.Logic.Contracts;
 
@@ -18,9 +20,14 @@ namespace SMARTplanner.Logic.Exact
             _accessService = access;
         }
 
-        public IEnumerable<Issue> GetIssuesPaged(string userId, string summaryPart = null, int page = 1, int pageSize = 10)
+        public ServiceCollectionResult<Issue> GetIssuesPaged(string userId, string summaryPart = null, int page = 1, int pageSize = 10)
         {
-            if (!Inspector.IsValidPageSize(pageSize)) return null;
+            var result = new ServiceCollectionResult<Issue>();
+            if (!Inspector.IsValidPageSize(pageSize))
+            {
+                result.HandleError(ErrorMessagesDict.InvalidPageSize);
+                return result;
+            }
 
             //get accessible issues
             var accessibleIssues = _accessService.GetAccessibleIssues(userId);
@@ -32,38 +39,74 @@ namespace SMARTplanner.Logic.Exact
                     .Where(i => i.Summary.Contains(summaryPart.ToLower()));
             }
 
-            return accessibleIssues
+            result.TargetCollection = accessibleIssues
                 .Skip((page - 1) * pageSize)
                 .Take(pageSize);
+            return result;
         }
 
-        public Issue GetIssue(long issueId, string userId)
+        public ServiceSingleResult<Issue> GetIssue(long issueId, string userId)
         {
-            return _accessService.GetAccessibleIssues(userId)
+            var result = new ServiceSingleResult<Issue>();
+            var issue = _accessService.GetAccessibleIssues(userId)
                 .SingleOrDefault(i => i.Id == issueId);
+
+            if (issue != null)
+                result.TargetObject = issue;
+            else
+                result.HandleError(ErrorMessagesDict.AccessDenied);
+
+            return result;
         }
 
-        public Issue GetIssue(int trackingNumber, string userId)
+        public ServiceSingleResult<Issue> GetIssue(int trackingNumber, string userId)
         {
-            return _accessService.GetAccessibleIssues(userId)
+            var result = new ServiceSingleResult<Issue>();
+            var issue = _accessService.GetAccessibleIssues(userId)
                 .FirstOrDefault(i => i.IssueTrackingNumber == trackingNumber);
+
+            if (issue != null)
+                result.TargetObject = issue;
+            else
+                result.HandleError(ErrorMessagesDict.AccessDenied);
+
+            return result;
         }
 
-        public void AddIssue(Issue issue)
+        public ServiceSingleResult<bool> AddIssue(Issue issue)
         {
+            var result = new ServiceSingleResult<bool>();
             if (issue != null && issue.Project != null)
             {
                 //check user access to the project
                 var projUserRef = _accessService.GetAccessByIssue(issue, issue.CreatorId);
-                if (projUserRef == null || !Inspector.CanUserUpdateProject(projUserRef)) return;
+                if (projUserRef == null || !Inspector.CanUserUpdateProject(projUserRef))
+                {
+                    result.HandleError(ErrorMessagesDict.AccessDenied);
+                    return result;
+                }
 
                 _context.Issues.Add(issue);
-                _context.SaveChanges();
+                try
+                {
+                    _context.SaveChanges();
+                    result.TargetObject = true;
+                    return result;
+                }
+                catch (Exception exc)
+                {
+                    result.HandleError(exc.Message);
+                    return result;
+                }
             }
+
+            result.HandleError(ErrorMessagesDict.NullInstance);
+            return result;
         }
 
-        public void UpdateIssue(Issue issue, string userId)
+        public ServiceSingleResult<bool> UpdateIssue(Issue issue, string userId)
         {
+            var result = new ServiceSingleResult<bool>();
             if (issue != null)
             {
                 var issueToUpdate = _context.Issues
@@ -73,12 +116,32 @@ namespace SMARTplanner.Logic.Exact
                 {
                     //check user access to the project
                     var projUserRef = _accessService.GetAccessByIssue(issueToUpdate, userId);
-                    if (projUserRef == null || !Inspector.CanUserUpdateProject(projUserRef)) return;
+                    if (projUserRef == null || !Inspector.CanUserUpdateProject(projUserRef))
+                    {
+                        result.HandleError(ErrorMessagesDict.AccessDenied);
+                        return result;
+                    }
 
                     _context.Entry(issueToUpdate).CurrentValues.SetValues(issue);
-                    _context.SaveChanges();
+                    try
+                    {
+                        _context.SaveChanges();
+                        result.TargetObject = true;
+                        return result;
+                    }
+                    catch (Exception exc)
+                    {
+                        result.HandleError(exc.Message);
+                        return result;
+                    }
                 }
+
+                result.HandleError(ErrorMessagesDict.NotFoundResource);
+                return result;
             }
+
+            result.HandleError(ErrorMessagesDict.NullInstance);
+            return result;
         }
     }
 }

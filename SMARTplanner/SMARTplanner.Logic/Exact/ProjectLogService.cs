@@ -2,6 +2,7 @@
 using System.Linq;
 using SMARTplanner.Data.Contracts;
 using SMARTplanner.Entities.Domain;
+using SMARTplanner.Entities.Helpers;
 using SMARTplanner.Logic.Contracts;
 
 namespace SMARTplanner.Logic.Exact
@@ -17,8 +18,9 @@ namespace SMARTplanner.Logic.Exact
             _accessService = access;
         }
 
-        public IEnumerable<ProjectLog> GetItemHistory(long projectId, string userId)
+        public ServiceCollectionResult<ProjectLog> GetItemHistory(long projectId, string userId)
         {
+            var result = new ServiceCollectionResult<ProjectLog>();
             var project = _context.Projects.SingleOrDefault(p => p.Id == projectId);
 
             if (project != null)
@@ -27,10 +29,18 @@ namespace SMARTplanner.Logic.Exact
                 var projectLogs = _context.ProjectsHistory
                     .Where(ph => ph.ProjectId == projectId);
 
-                if (_accessService.GetAccessByProject(projectId, userId) != null) return projectLogs;
+                if (_accessService.GetAccessByProject(projectId, userId) != null)
+                {
+                    result.TargetCollection = projectLogs;
+                    return result;
+                }
+
+                result.HandleError(ErrorMessagesDict.AccessDenied);
+                return result;
             }
 
-            return null;
+            result.HandleError(ErrorMessagesDict.NotFoundResource);
+            return result;
         }
 
         public void LogAction(ProjectLog projectLog)

@@ -5,7 +5,7 @@ namespace SMARTplanner.Logic.Contracts
 {
     public interface ILogService<T> where T : ILogEntity
     {
-        IEnumerable<T> GetItemHistory(long itemId, string userId);
+        ServiceCollectionResult<T> GetItemHistory(long itemId, string userId);
         void LogAction(T log);
     }
 }
