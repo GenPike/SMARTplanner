@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Web.Mvc;
 using Ninject;
+using SMARTplanner.Entities.Domain;
 using SMARTplanner.Logic.Contracts;
 using SMARTplanner.Logic.Exact;
 
@@ -36,6 +37,8 @@ namespace SMARTplanner.Infrastructure
             _kernel.Bind<IWorkItemService>().To<WorkItemService>();
             _kernel.Bind<IReportService>().To<ReportService>();
             _kernel.Bind<IAccessService>().To<AccessService>();
+            _kernel.Bind<ILogService<ProjectLog>>().To<ProjectLogService>();
+            _kernel.Bind<ILogService<IssueLog>>().To<IssueLogService>();
         }
     }
 }
