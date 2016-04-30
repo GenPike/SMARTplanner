@@ -1,8 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using SMARTplanner.Data.Contracts;
 using SMARTplanner.Entities.Domain;
+using SMARTplanner.Entities.Helpers;
 using SMARTplanner.Logic.Business;
 using SMARTplanner.Logic.Contracts;
 
@@ -19,8 +19,9 @@ namespace SMARTplanner.Logic.Exact
             _accessService = access;
         }
 
-        public IEnumerable<Report> GetIssueReports(long issueId, string userId)
+        public ServiceCollectionResult<Report> GetIssueReports(long issueId, string userId)
         {
+            var result = new ServiceCollectionResult<Report>();
             //check can user get access to project
             var issue = _context.Issues
                 .SingleOrDefault(i => i.Id == issueId);
@@ -28,42 +29,69 @@ namespace SMARTplanner.Logic.Exact
             if (issue != null)
             {
                 var projUserRef = _accessService.GetAccessByIssue(issue, userId);
-                if (projUserRef == null) return null;
+                
+                if (projUserRef == null) result.HandleError(ErrorMessagesDict.AccessDenied);
+                else result.TargetCollection = issue.Reports;
 
-                //get issue workitems
-                return issue.Reports;
+                return result;
             }
 
-            return null;
+            result.HandleError(ErrorMessagesDict.NotFoundResource);
+            return result;
         }
 
-        public Report GetReport(long reportId, string userId)
+        public ServiceSingleResult<Report> GetReport(long reportId, string userId)
         {
+            var result = new ServiceSingleResult<Report>();
             var report = GetReportById(reportId);
             if (report != null)
             {
                 //does user have any binding with project
                 var projUserRef = _accessService.GetAccessByReport(report, userId);
-                if (projUserRef == null) return null;
+                
+                if (projUserRef == null) result.HandleError(ErrorMessagesDict.AccessDenied);
+                else result.TargetObject = report;
+
+                return result;
             }
 
-            return report;
+            result.HandleError(ErrorMessagesDict.NotFoundResource);
+            return result;
         }
 
-        public void AddReport(Report report)
+        public ServiceSingleResult<bool> AddReport(Report report)
         {
+            var result = new ServiceSingleResult<bool>();
             if (report != null && report.Issue != null)
             {
                 var projUserRef = _accessService.GetAccessByReport(report, report.ReporterId);
-                if (projUserRef == null || !Inspector.CanUserAddReport(projUserRef)) return;
+                if (projUserRef == null || !Inspector.CanUserAddReport(projUserRef))
+                {
+                    result.HandleError(ErrorMessagesDict.AccessDenied);
+                    return result;
+                }
 
                 _context.Reports.Add(report);
-                _context.SaveChanges();
+                try
+                {
+                    _context.SaveChanges();
+                    result.TargetObject = true;
+                }
+                catch (Exception exc)
+                {
+                    result.HandleError(exc.Message);
+                }
+
+                return result;
             }
+
+            result.HandleError(ErrorMessagesDict.NullInstance);
+            return result;
         }
 
-        public void UpdateReport(Report report, string userId)
+        public ServiceSingleResult<bool> UpdateReport(Report report, string userId)
         {
+            var result = new ServiceSingleResult<bool>();
             if (report != null)
             {
                 var reportToUpdate = GetReportById(report.Id);
@@ -72,28 +100,64 @@ namespace SMARTplanner.Logic.Exact
                 {
                     //check security
                     var projUserRef = _accessService.GetAccessByReport(reportToUpdate, userId);
-                    if (projUserRef == null || 
-                        !Inspector.CanUserUpdateReport(projUserRef, reportToUpdate, userId)) return;
+                    if (projUserRef == null ||
+                        !Inspector.CanUserUpdateReport(projUserRef, reportToUpdate, userId))
+                    {
+                        result.HandleError(ErrorMessagesDict.AccessDenied);
+                        return result;
+                    }
 
                     _context.Entry(reportToUpdate).CurrentValues.SetValues(report);
-                    _context.SaveChanges();
+                    try
+                    {
+                        _context.SaveChanges();
+                        result.TargetObject = true;
+                    }
+                    catch (Exception exc)
+                    {
+                        result.HandleError(exc.Message);
+                    }
+                    return result;
                 }
+
+                result.HandleError(ErrorMessagesDict.NotFoundResource);
+                return result;
             }
+
+            result.HandleError(ErrorMessagesDict.NullInstance);
+            return result;
         }
 
-        public void DeleteReport(long reportId, string userId)
+        public ServiceSingleResult<bool> DeleteReport(long reportId, string userId)
         {
+            var result = new ServiceSingleResult<bool>();
             var reportToDelete = GetReportById(reportId);
             if (reportToDelete != null)
             {
                 //check security
                 var projUserRef = _accessService.GetAccessByReport(reportToDelete, userId);
-                if (projUserRef == null || 
-                    !Inspector.CanUserDeleteReport(projUserRef, reportToDelete, userId)) return;
+                if (projUserRef == null ||
+                    !Inspector.CanUserDeleteReport(projUserRef, reportToDelete, userId))
+                {
+                    result.HandleError(ErrorMessagesDict.AccessDenied);
+                    return result;
+                }
 
                 _context.Reports.Remove(reportToDelete);
-                _context.SaveChanges();
+                try
+                {
+                    _context.SaveChanges();
+                    result.TargetObject = true;
+                }
+                catch (Exception exc)
+                {
+                    result.HandleError(exc.Message);
+                }
+                return result;
             }
+
+            result.HandleError(ErrorMessagesDict.NotFoundResource);
+            return result;
         }
 
         #region Helpers

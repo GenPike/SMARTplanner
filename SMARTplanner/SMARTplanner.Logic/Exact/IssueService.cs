@@ -1,5 +1,4 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using SMARTplanner.Data.Contracts;
 using SMARTplanner.Entities.Domain;
@@ -91,13 +90,12 @@ namespace SMARTplanner.Logic.Exact
                 {
                     _context.SaveChanges();
                     result.TargetObject = true;
-                    return result;
                 }
                 catch (Exception exc)
                 {
                     result.HandleError(exc.Message);
-                    return result;
                 }
+                return result;
             }
 
             result.HandleError(ErrorMessagesDict.NullInstance);
@@ -127,13 +125,12 @@ namespace SMARTplanner.Logic.Exact
                     {
                         _context.SaveChanges();
                         result.TargetObject = true;
-                        return result;
                     }
                     catch (Exception exc)
                     {
                         result.HandleError(exc.Message);
-                        return result;
                     }
+                    return result;
                 }
 
                 result.HandleError(ErrorMessagesDict.NotFoundResource);

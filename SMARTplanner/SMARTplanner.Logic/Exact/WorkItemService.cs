@@ -1,7 +1,8 @@
-﻿using System.Collections.Generic;
+﻿using System;
 using System.Linq;
 using SMARTplanner.Data.Contracts;
 using SMARTplanner.Entities.Domain;
+using SMARTplanner.Entities.Helpers;
 using SMARTplanner.Logic.Business;
 using SMARTplanner.Logic.Contracts;
 
@@ -18,8 +19,9 @@ namespace SMARTplanner.Logic.Exact
             _accessService = access;
         }
 
-        public IEnumerable<WorkItem> GetIssueWorkItems(long issueId, string userId)
+        public ServiceCollectionResult<WorkItem> GetIssueWorkItems(long issueId, string userId)
         {
+            var result = new ServiceCollectionResult<WorkItem>();
             //check can user get access to project
             var issue = _context.Issues
                 .SingleOrDefault(i => i.Id == issueId);
@@ -28,42 +30,74 @@ namespace SMARTplanner.Logic.Exact
             {
                 //does user have any binding with project
                 var projUserRef = _accessService.GetAccessByIssue(issue, userId);
-                if (projUserRef == null) return null;
+
+                if (projUserRef == null) result.HandleError(ErrorMessagesDict.AccessDenied);
+                else result.TargetCollection = issue.WorkItems; //get issue workitems
                 
-                //get issue workitems
-                return issue.WorkItems;
+                return result;
             }
 
-            return null;
+            result.HandleError(ErrorMessagesDict.NotFoundResource);
+            return result;
         }
 
-        public WorkItem GetWorkItem(long itemId, string userId)
+        public ServiceSingleResult<WorkItem> GetWorkItem(long itemId, string userId)
         {
+            var result = new ServiceSingleResult<WorkItem>();
             var workItem = GetWorkItemById(itemId);
             if (workItem != null)
             {
                 //does user have any binding with project
                 var projUserRef = _accessService.GetAccessByWorkItem(workItem, userId);
-                if (projUserRef == null) return null;
+                
+                if (projUserRef == null) result.HandleError(ErrorMessagesDict.AccessDenied);
+                else result.TargetObject = workItem;
+
+                return result;
             }
 
-            return workItem;
+            result.HandleError(ErrorMessagesDict.NotFoundResource);
+            return result;
         }
 
-        public void AddWorkItem(WorkItem item)
+        public ServiceSingleResult<bool> AddWorkItem(WorkItem item)
         {
+            var result = new ServiceSingleResult<bool>();
             if (item != null && item.Issue != null)
             {
                 var projUserRef = _accessService.GetAccessByWorkItem(item, item.CreatorId);
-                if (projUserRef == null || !Inspector.CanUserUpdateProject(projUserRef)) return;
+                if (projUserRef == null || !Inspector.CanUserUpdateProject(projUserRef))
+                {
+                    result.HandleError(ErrorMessagesDict.AccessDenied);
+                    return result;
+                }
+
+                if (!Inspector.IsValidWorkItemTime(item))
+                {
+                    result.HandleError(ErrorMessagesDict.WrongEstimatedTimeFormat);
+                    return result;
+                }
 
                 _context.WorkItems.Add(item);
-                _context.SaveChanges();
+                try
+                {
+                    _context.SaveChanges();
+                    result.TargetObject = true;
+                }
+                catch (Exception exc)
+                {
+                    result.HandleError(exc.Message);
+                }
+                return result;
             }
+
+            result.HandleError(ErrorMessagesDict.NullInstance);
+            return result;
         }
 
-        public void UpdateWorkItem(WorkItem item, string userId)
+        public ServiceSingleResult<bool> UpdateWorkItem(WorkItem item, string userId)
         {
+            var result = new ServiceSingleResult<bool>();
             if (item != null)
             {
                 var itemToUpdate = GetWorkItemById(item.Id);
@@ -72,28 +106,68 @@ namespace SMARTplanner.Logic.Exact
                 {
                     //check security
                     var projUserRef = _accessService.GetAccessByWorkItem(itemToUpdate, userId);
-                    if (projUserRef == null || !Inspector.CanUserUpdateProject(projUserRef)) return;
+                    if (projUserRef == null || !Inspector.CanUserUpdateProject(projUserRef))
+                    {
+                        result.HandleError(ErrorMessagesDict.AccessDenied);
+                        return result;
+                    }
 
-                    if (!Inspector.IsValidWorkItemTime(item)) return;
+                    if (!Inspector.IsValidWorkItemTime(item))
+                    {
+                        result.HandleError(ErrorMessagesDict.WrongEstimatedTimeFormat);
+                        return result;
+                    }
 
                     _context.Entry(itemToUpdate).CurrentValues.SetValues(item);
-                    _context.SaveChanges();
+                    try
+                    {
+                        _context.SaveChanges();
+                        result.TargetObject = true;
+                    }
+                    catch (Exception exc)
+                    {
+                        result.HandleError(exc.Message);
+                    }
+                    return result;
                 }
+
+                result.HandleError(ErrorMessagesDict.NotFoundResource);
+                return result;
             }
+
+            result.HandleError(ErrorMessagesDict.NullInstance);
+            return result;
         }
 
-        public void DeleteWorkItem(long itemId, string userId)
+        public ServiceSingleResult<bool> DeleteWorkItem(long itemId, string userId)
         {
+            var result = new ServiceSingleResult<bool>();
             var item = GetWorkItemById(itemId);
             if (item != null)
             {
                 //check security
                 var projUserRef = _accessService.GetAccessByWorkItem(item, userId);
-                if (projUserRef == null || !Inspector.CanUserUpdateProject(projUserRef)) return;
+                if (projUserRef == null || !Inspector.CanUserUpdateProject(projUserRef))
+                {
+                    result.HandleError(ErrorMessagesDict.AccessDenied);
+                    return result;
+                }
 
                 _context.WorkItems.Remove(item);
-                _context.SaveChanges();
+                try
+                {
+                    _context.SaveChanges();
+                    result.TargetObject = true;
+                }
+                catch (Exception exc)
+                {
+                    result.HandleError(exc.Message);
+                }
+                return result;
             }
+
+            result.HandleError(ErrorMessagesDict.NotFoundResource);
+            return result;
         }
 
         #region Helpers
