@@ -4,6 +4,7 @@ using System.Web.Mvc;
 
 namespace SMARTplanner.Controllers
 {
+    [Authorize]
     public class ProjectController : Controller
     {
         // GET: Project
