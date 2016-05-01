@@ -7,22 +7,29 @@
     @Scripts.Render("~/bundles/modernizr")
     <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
     <link href="~/Content/materialize.min.css" rel="stylesheet" media="screen,projection" />
+    <link href="~/Content/Site.css" rel="stylesheet" />
 </head>
 <body>
-    <div class="navbar-fixed">
-        <nav>
-            <div class="nav-wrapper teal lighten-2">
-                <div class="container">
-                    <ul class="left">
-                        <li>@Html.ActionLink("SMARTplanner", "Index", "Home")</li>
+    <nav>
+        <div class="nav-wrapper teal lighten-2">
+            <div class="container">
+                <ul class="left">
+                    <li style="font-weight: bold;">@Html.ActionLink("SMARTplanner", "Index", "Home")</li>
+                    @if (!Request.IsAuthenticated)
+                    {
                         <li>@Html.ActionLink("About", "About", "Home")</li>
                         <li>@Html.ActionLink("Contact", "Contact", "Home")</li>
-                    </ul>
-                    @Html.Partial("_LoginPartial")
-                </div>
+                    }
+                    else
+                    {
+                        <li>@Html.ActionLink("Projects", "Index", "Project")</li>
+                        <li>@Html.ActionLink("Issues", "Contact", "Home")</li>
+                    }
+                </ul>
+                @Html.Partial("_LoginPartial")
             </div>
-        </nav>
-    </div>
+        </div>
+    </nav>
     <div class="container">
         @RenderBody()
         <footer class="page-footer teal lighten-2">
