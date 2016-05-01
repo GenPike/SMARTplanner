@@ -34,4 +34,11 @@ namespace SMARTplanner.Entities.Helpers
         ReportUpdated,
         ReportDeleted
     }
+
+    public enum ProjectFilter
+    {
+        All,
+        InvolvedIn,
+        CreatedByMe
+    }
 }

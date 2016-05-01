@@ -20,7 +20,8 @@ namespace SMARTplanner.Logic.Exact
             _accessService = access;
         }
 
-        public ServiceCollectionResult<Project> GetProjectsPaged(string userId, bool? ownership = null, int page = 1, int pageSize = 10)
+        public ServiceCollectionResult<Project> GetProjectsPaged(string userId, ProjectFilter filter = ProjectFilter.All,
+            int page = 1, int pageSize = 10)
         {
             var result = new ServiceCollectionResult<Project>();
             if (!Inspector.IsValidPageSize(pageSize))
@@ -30,11 +31,12 @@ namespace SMARTplanner.Logic.Exact
             }
             IEnumerable<Project> targetProjects;
 
-            if (ownership.HasValue)
+            if (filter != ProjectFilter.All)
             {
-                targetProjects = (ownership.Value) 
-                    ? GetProjectsUserCreated(userId)
-                    : GetProjectsUserInvolvedOnly(userId);
+                if (filter == ProjectFilter.CreatedByMe)
+                    targetProjects = GetProjectsUserCreated(userId);
+                else
+                    targetProjects = GetProjectsUserInvolvedOnly(userId);
             }
             else targetProjects = _accessService.GetAccessibleProjects(userId);
 

@@ -1,0 +1,36 @@
+﻿@{
+    Layout = null;
+    ViewBag.Title = "Error";
+}
+
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>@ViewBag.Title - SMARTplanner</title>
+    <link href="http://fonts.googleapis.com/icon?family=Material+Icons" rel="stylesheet">
+    <link href="~/Content/materialize.min.css" rel="stylesheet" media="screen,projection" />
+</head>
+<body>
+    <div class="container">
+        <div class="row">
+            <div class="col s12 center-align">
+                <div class="card blue-grey darken-1">
+                    <div class="card-content white-text">
+                        <span class="card-title">Ooops! Error occured</span>
+                        <p>
+                            Details: @ViewBag.ErrorMessage
+                            <br/>
+                            We are working on it.
+                        </p>
+                    </div>
+                    <div class="card-action">
+                        @Html.ActionLink("Go to Home page", "Index", "Home")
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

@@ -6,7 +6,8 @@ namespace SMARTplanner.Logic.Contracts
 {
     public interface IProjectService
     {
-        ServiceCollectionResult<Project> GetProjectsPaged(string userId, bool? ownership = null, int page = 1, int pageSize = 10);
+        ServiceCollectionResult<Project> GetProjectsPaged(string userId, ProjectFilter filter = ProjectFilter.All,
+            int page = 1, int pageSize = 10);
         ServiceSingleResult<Project> GetProject(long projectId, string userId);
         ServiceSingleResult<Project> GetProject(string projectName, string userId);
         ServiceSingleResult<bool> AddProject(Project project);
