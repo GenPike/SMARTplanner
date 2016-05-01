@@ -5,18 +5,28 @@
     {
         @Html.AntiForgeryToken()
 
+        <ul id="dropdown_userinfo" class="dropdown-content">
+            <li><a href="">My Profile</a></li>
+            <li class="divider"></li>
+            <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
+        </ul>
+
         <ul class="right">
             <li>
-                @Html.ActionLink("Hello " + User.Identity.GetUserName() + "!", "Index", "Manage", routeValues: null, htmlAttributes: new { title = "Manage" })
+                <a class="dropdown-button" href="@Url.Action("Index", "Manage", routeValues: null)"
+                   data-activates="dropdown_userinfo">
+                    @User.Identity.GetUserName()
+                    <i class="material-icons right">arrow_drop_down</i>
+                </a>
             </li>
-            <li><a href="javascript:document.getElementById('logoutForm').submit()">Log off</a></li>
         </ul>
     }
 }
 else
 {
     <ul class="right">
-        <li>@Html.ActionLink("Register", "Register", "Account", routeValues: null, htmlAttributes: new { id = "registerLink" })</li>
-        <li>@Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })</li>
+        <li>
+            @Html.ActionLink("Log in", "Login", "Account", routeValues: null, htmlAttributes: new { id = "loginLink" })
+        </li>
     </ul>
 }
