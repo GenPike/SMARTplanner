@@ -61,3 +61,5 @@ C:\Users\Алексей\Documents\Visual Studio 2013\Projects\SMARTplanner\SMART
 C:\Users\Алексей\Documents\Visual Studio 2013\Projects\SMARTplanner\SMARTplanner\SMARTplanner\bin\SMARTplanner.Logic.dll
 C:\Users\Алексей\Documents\Visual Studio 2013\Projects\SMARTplanner\SMARTplanner\SMARTplanner\bin\SMARTplanner.Entities.pdb
 C:\Users\Алексей\Documents\Visual Studio 2013\Projects\SMARTplanner\SMARTplanner\SMARTplanner\bin\SMARTplanner.Logic.pdb
+C:\Users\Алексей\Documents\Visual Studio 2013\Projects\SMARTplanner\SMARTplanner\SMARTplanner\bin\AutoMapper.dll
+C:\Users\Алексей\Documents\Visual Studio 2013\Projects\SMARTplanner\SMARTplanner\SMARTplanner\bin\AutoMapper.xml

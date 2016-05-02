@@ -1,9 +1,12 @@
 ﻿using System;
-using System.Web;
+using System.Collections.Generic;
+using System.Linq;
 using System.Web.Mvc;
 using SMARTplanner.Logic.Contracts;
 using Microsoft.AspNet.Identity;
 using SMARTplanner.Entities.Helpers;
+using SMARTplanner.Models;
+using AutoMapper;
 
 namespace SMARTplanner.Controllers
 {
@@ -25,8 +28,11 @@ namespace SMARTplanner.Controllers
 
             if (!result.ErrorHandled)
             {
+                var collectionViewModel = result.TargetCollection
+                    .Select(project => Mapper.Map<ProjectListItemViewModel>(project))
+                    .ToList();
 
-                return View();
+                return View(collectionViewModel);
             }
             else
             {
