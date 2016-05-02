@@ -48,7 +48,16 @@ namespace SMARTplanner.Tests.TestHelpers
 
         public override ObservableCollection<T> Local
         {
-            get { return new ObservableCollection<T>(_data); }
+            get { return _data; }
+        }
+
+        public override IEnumerable<T> AddRange(IEnumerable<T> entities)
+        {
+            foreach (var item in entities)
+            {
+                _data.Add(item);
+            }
+            return _data;
         }
 
         Type IQueryable.ElementType
